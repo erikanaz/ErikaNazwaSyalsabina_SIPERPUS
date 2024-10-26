@@ -1,0 +1,91 @@
+-- setup --
+> composer install
+> npm intsall
+
+-- copy file .env.example --
+> cp .env.example .env
+
+-- generate key di file .env --
+>php artisan key:generate
+
+-- buat migrate --
+*hidupkan apache dan mysql di xampp
+> php artisan migrate
+> yes
+
+-- jalankan migrate --
+> php artisan serve (terminal 1)
+buat terminal baru
+> npm run dev (terminal 2)
+klik link server laravel
+
+-- buat tabel baru --
+* buat tabel yg tidak ada foreign key dulu
+*di terminal bash baru (opsional)
+> php artisan make:migration create_[table/s]_table
+
+-- buat kolom baru ke tabel di database --
+setelah ditambahkan kolom di file table nya, jalankan migrate nya :
+> php artisan migrate
+
+*urutan tabel
+1. bookshelves
+2. books
+	membuat foreign 
+	$table->foreign('bookshelf_id')->references('id')->on('bookshelves');
+
+
+-- buat seeder --
+> php artisan make:seeder BookshelfSeeder
+* import : use Illuminate\Support\Facades\DB;
+* di fungsi run() isi datanya, sesuaikan kolomnya
+	//query builder
+        DB::table('bookshelves')->insert([
+            [
+                'code'=>'RAK01',
+                'name'=>'Informatika',
+            ],
+            [
+                'code'=>'RAK02',
+                'name'=>'Sipil',
+            ],
+            [
+                'code'=>'GTA03',
+                'name'=>'Filsafat',
+            ]
+        ]);
+* lalu jalankan kelas seeder nya, di file DatabaseSeeder
+* di fungsi run(), panggil kelas seeder nya
+	$this->call([
+            BookshelfSeeder::class,
+        ]);
+
+-- jalankan seeder --
+* setelah itu jalankan seeder nya di terminal
+> php artisan db:seed
+
+
+* selain cara query builder, ada cara lain untuk menambahkan seeder
+* menggunakan model, jalankan :
+> php artisan make:model Bookshelf
+* cek di folder app>Model>Bookshelf
+* di BookshelfSeeder tambahkan :
+	//ORM -> Object Relational Model
+        Bookshelf::create([
+            'code'=>'RAK03',
+            'name'=>'Industri',
+        ]);
+* lalu jalankan di terminal:
+> php artisan migrate:fresh --seed
+* jika eror, di model Bookshelf tambahkan
+	public $timestamps = false; //agar menonaktifkan kolom timestamp di tabel bookkshelves
+* jalankan lagi migrate:fresh nya
+
+
+------------------------------------------------------------------------------------
+- jika ingin mengubah table -> php artisan migrate:rollback lalu php artisan migrate
+- atau gunakan php artisan migrate:fresh, tapi akan menghapus semua data
+
+TUGAS P4
+- buat migration sisa tabel di erd
+- tambahkan tabel BookCategories (tambahan)
