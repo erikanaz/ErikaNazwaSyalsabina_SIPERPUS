@@ -1,0 +1,83 @@
+PERTEMUAN 5 - Larevel Breeze dan Spatie Laravel Permission
+
+- mengatur role dan hak akses
+
+- install spatie melalui composer
+	> composer require spatie/laravel-permission
+- perbarui service provider
+  di bootstarp\cache\providers.php tambahkan :
+	> Spatie\Permission\PermissionServiceProvider::class,
+- publish migration dan file konfigurasi
+	> php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+- clear cache
+	> php artisan optimize:clear
+- buat 2 model dan 2 seeder
+	> php artisan make:model Role
+	> php artisan make:model Permission
+	> php artisan make:seeder RoleSeeder
+	> php artisan make:seeder UserSeeder
+- ubah extend dari model role dan permission
+  model role :
+	use Spatie\Permission\Models\Role as ModelRole;
+	class Role extends ModelRole
+- tambahkan HasRole di model user
+- clear cache
+- import role di role seeder
+- tambahkan role
+	Role::create(['name' => 'pustakawan']);
+        Role::create(['name' => 'mahasiswa']);
+- di database seeder pindahkan user factory ke user seeder, import usernya (gunakan suggest -> ctrl+space)
+  ubah name dan email :
+	User::factory()->create([
+            'name' => 'pustakawan',
+            'email' => 'pustakawan@unsur.ac.id',
+        ])->assignRole('pustakawan');
+
+        User::factory()->create([
+            'name' => 'mahasiswa',
+            'email' => 'mahasiswa@unsur.ac.id',
+        ])->assignRole('mahasiswa');
+- buat seeder permission
+	> php artisan make:seeder PermissionSeeder
+- import permission, tambahkan :
+	Permission::create(['name' => 'view_book']);
+        Permission::create(['name' => 'edit_user']);
+        Permission::create(['name' => 'edit_book']);
+- perbarui user seeder (berikan permission)
+	 User::factory()->create([
+            'name' => 'pustakawan',
+            'email' => 'pustakawan@unsur.ac.id',
+        ])
+        ->assignRole('pustakawan')
+        ->givePermissionTo('edit_book', 'edit_user');
+
+        User::factory()->create([
+            'name' => 'mahasiswa',
+            'email' => 'mahasiswa@unsur.ac.id',
+        ])
+        ->assignRole('mahasiswa')
+        ->givePermissionTo('view_book');
+- perbarui database seeder :
+	// BookshelfSeeder::class,
+            RoleSeeder::class,
+            PermissionSeeder::class,
+            UserSeeder::class,
+- jalankan migrate
+	> php artisan migrate
+	> php artisan db:seed
+- jalankan :
+	cmd 1 : 
+	> npm run dev
+	cmd 2 : 
+	> php artisan serve
+- log in : 
+	username : mahasiswa/pustakawan
+	password : password -> dari userfactory.php
+- pada resources\dashboard.blade.php update tampilannya
+	...
+	<div class="p-6 text-gray-900 dark:text-gray-100">
+                    {{ __("Selamat Datang, ".Auth()->user()->name."!") }}
+         </div>
+	...
+- di layouts\navigation.blade.php tambahkan role mahasiswa dan pustakawan
+- tambahkan route nya di web.php
