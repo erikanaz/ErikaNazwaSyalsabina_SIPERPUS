@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Bookshelf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -21,7 +22,7 @@ class BookController extends Controller
         $validate = $request->validate([
             'title' => 'required|max:255',
             'author' => 'required|max:255',
-            'year' => 'required|max:2077',
+            'year' => 'required|integer|min:1945|max:2077',
             'publisher' => 'required|max:255',
             'city' => 'required|max:50',
             'cover' => 'required',
@@ -30,7 +31,7 @@ class BookController extends Controller
         if($request->hasFile('cover')){
             $path = $request->file('cover')->storeAs(
                 'public/cover_buku',
-                'cover_buku_'.time() . '.' . $request->file('cover')->extension()
+                'cover_buku_' . time() . '.' . $request->file('cover')->extension()
             );
             $validate['cover'] = basename($path);
         }
@@ -58,7 +59,7 @@ class BookController extends Controller
         $validate = $request->validate([
             'title' => 'required|max:255',
             'author' => 'required|max:255',
-            'year' => 'required|max:2077',
+            'year' => 'required|integer|min:1945|max:2077',
             'publisher' => 'required|max:255',
             'city' => 'required|max:50',
             'cover' => 'required',
@@ -66,11 +67,11 @@ class BookController extends Controller
         ]);
         if($request->hasFile('cover')){
             if($book->cover != null){
-                Storage::delete('public/cover_buku/'.$request->old_cover);
+                Storage::delete('public/cover_buku/'.$book->cover);
             }
             $path = $request->file('cover')->storeAs(
                 'public/cover_buku',
-                'cover_buku_'.time() . '.' . $request->file('cover')->extension()
+                'cover_buku_' . time() . '.' . $request->file('cover')->extension()
             );
             $validate['cover'] = basename($path);
         }
@@ -90,12 +91,18 @@ class BookController extends Controller
     }
     public function destroy(string $id){
         $book = Book::findOrFail($id);
-        Storage::delete('public/cover_buku/'.$book->old_cover);
+        Storage::delete('public/cover_buku/'.$book->cover);
         $book->delete();
         $notification = array(
             'message' => 'data buku berhasil dihapus',
             'alert-type' => 'success'
         );
         return redirect()->route('book')->with($notification); 
+    }
+
+    public function print(){
+        $data['books'] = Book::with('bookshelf')->get();
+        $pdf = Pdf::loadView('books.print', $data);
+        return $pdf->stream('ListBuku.pdf');
     }
 }

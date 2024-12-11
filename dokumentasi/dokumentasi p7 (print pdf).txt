@@ -1,0 +1,10 @@
+- agar foto buku nya ada, ketik di terminal:
+	php artisan storage:link
+	php artisan optimize:clear
+
+- menyimpan cover buku di storage>app>public
+	import : use Illuminate\Support\Facades\Storage;
+		Storage::delete('public/cover_buku'.$book->old_cover);
+
+- install package pdf
+	composer require barryvdh/laravel-dompdf
