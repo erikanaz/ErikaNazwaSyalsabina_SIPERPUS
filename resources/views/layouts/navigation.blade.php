@@ -16,20 +16,11 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    @hasrole('mahasiswa')
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('List Buku') }}
-                    </x-nav-link>
-                    @endhasrole
+                    
+                        <x-nav-link :href="route('book')" :active="request()->routeIs('book')">
+                            {{ __('List Buku') }}
+                        </x-nav-link>
 
-                    @hasrole('pustakawan')
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Manage Book') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Manage User') }}
-                    </x-nav-link>
-                    @endhasrole
                 </div>
             </div>
 

@@ -15,25 +15,16 @@ class BookshelfSeeder extends Seeder
     public function run(): void
     {
         //query builder
-        DB::table('bookshelves')->insert([
-            [
-                'code'=>'RAK01',
-                'name'=>'Informatika',
-            ],
-            [
-                'code'=>'RAK02',
-                'name'=>'Sipil',
-            ],
-            [
-                'code'=>'GTA03',
-                'name'=>'Filsafat',
-            ]
+        DB::table("bookshelves")->insert([
+            ['code' => 'BKS001','name' => 'Novel'], 
+            ['code' => 'BKS002','name' => 'Educational'],
         ]);
+        
 
         //ORM -> Object Relational Model
         Bookshelf::create([
-            'code'=>'RAK03',
-            'name'=>'Industri',
+            'code' => 'BKS003',
+            'name'=> 'History',
         ]);
     }
 }
