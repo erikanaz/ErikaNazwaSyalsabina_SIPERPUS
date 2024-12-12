@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Bookshelf extends Model
 {
-    protected $table = 'bookshelves';
+    //protected $table = 'bookshelves';
     public $timestamps = false;
 }
