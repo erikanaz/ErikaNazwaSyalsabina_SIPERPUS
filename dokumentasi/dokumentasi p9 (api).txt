@@ -1,0 +1,57 @@
+PERTEMUAN 9 - API
+
+- API -> layanan di luar project, cara untuk dua atau lebih perangkat lunak untuk saling berkomunikasi
+- laravel sekarang ga harus install composer sanctum, sudah termasuk di default
+- API -> jembatan antara 2 sistem atau lebih, bahasa nya JSON
+- contoh: antara tokped dan bank, login di sebuah aplikasi menggunakan google
+
+#install api
+> php artisan install:api
+> yes
+* routes/api tidak bersifat publik
+
+# cek list route
+> php artisan route:list
+
+# cek token (identitas yang masuk) -> di softwre Postman
+
+#cek api login
+> buat tab baru
+> ubah jadi POST, masukkan link laravel http://127.0.0.1:8000/api/login
+> di Body > form-data, tambahkan email dan password, klik send
+> copy token yang ada 
+	1|iTf0t5K7u4LQ31h6WYU3TLNvWJI3kLnAZIuSF1Psd5d2f974
+> token ada batas waktunya
+
+#cek api books (get)
+> buat tab baru
+> ubah jadi get, masukkan link http://127.0.0.1:8000/api/books
+> di Authorization, pili type Beare Token
+> di token, ubah token nya menjadi token yang ada di login
+> jika ingin get berdasarkan id, ubah link nya http://127.0.0.1:8000/api/book/1
+
+# api book (post) -> tambah data baru
+> tab baru
+> ubah jadi post, link http://127.0.0.1:8000/api/book
+> di Body > form-data, tambahkan dan isi data data dari buku:
+	-> title, author, year, publisher, city, bookshelf_id
+> di Authorizaton, pilih Beare Token, dan masukkan token login
+> klik send
+> jika ingin post gambar, di cover, klik tanda panah di sisi cover, pilih file
+> tambahkan gambarnya
+
+# api book (patch) -> edit data buku
+> tetep post, tapi link nya diubah http://127.0.0.1:8000/api/book/2
+> ceklis field yang akan diedit saja, yang lain nya di unceklist
+> tambahkan field _method, isi dengan patch
+> klik send
+
+# api book (delete) -> hapus
+> tab baru
+> pilih delete, link http://127.0.0.1:8000/api/book/2 -> id nya sesuai dengan yang ingin dihapus
+> di Authorizaton, pilih Beare Token, dan masukkan token login
+> klik send
+
+
+
+
