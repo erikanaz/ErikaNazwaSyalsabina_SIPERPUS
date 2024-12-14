@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/book', [BookController::class, 'index'])->name('book');
+    Route::get('/search', [SearchController::class, 'search'])->name('search');
 });
 
 Route::group(['middleware' => ['role:pustakawan']], function () {
@@ -29,6 +31,8 @@ Route::group(['middleware' => ['role:pustakawan']], function () {
     Route::get('/book/print', [BookController::class, 'print'])->name('book.print');
     Route::get('/book/export', [BookController::class, 'export'])->name('book.export');
     Route::post('/book/import', [BookController::class, 'import'])->name('book.import');
+
+    // Route::get('/search', [SearchController::class, 'search'])->name('search');
 });
 
 require __DIR__ . '/auth.php';

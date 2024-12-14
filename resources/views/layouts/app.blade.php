@@ -33,9 +33,13 @@
         @endisset
 
         <!-- Page Content -->
-        <main>
-            {{ $slot }}
-        </main>
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+
+            <!-- Page Content -->
+            <main>
+                {{ $slot }}
+            </main>
+        </div>
     </div>
 
     <script>
@@ -45,6 +49,7 @@
             showConfirmButton: false,
             timer: 3000,
         });
+
         @if (Session::has('message'))
             var type = "{{ Session::get('alert-type') }}";
             switch (type) {
@@ -82,6 +87,7 @@
                     break;
             }
         @endif
+
         @if ($errors->any())
             @php $list = null; @endphp
             @foreach ($errors->all() as $error)

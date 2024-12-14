@@ -13,15 +13,24 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class BookController extends Controller
 {
-    public function index(){
-        $data['books'] = Book::all();
-        return view('books.index', $data);
+    public function index()
+    {
+        // Mengambil 5 data buku per halaman
+        $books = Book::paginate(5);
+
+        // Mengirim data buku ke view
+        return view('books.index', compact('books'));
+
+        // $data['books'] = Book::all();
+        // return view('books.index', $data);
     }
-    public function create(){
+    public function create()
+    {
         $data['bookshelves'] = Bookshelf::pluck('name', 'id');
         return view('books.create', $data);
     }
-    public function store(Request $request){
+    public function store(Request $request)
+    {
         $validate = $request->validate([
             'title' => 'required|max:255',
             'author' => 'required|max:255',
@@ -31,7 +40,7 @@ class BookController extends Controller
             'cover' => 'required',
             'bookshelf_id' => 'required|max:5'
         ]);
-        if($request->hasFile('cover')){
+        if ($request->hasFile('cover')) {
             $path = $request->file('cover')->storeAs(
                 'public/cover_buku',
                 'cover_buku_' . time() . '.' . $request->file('cover')->extension()
@@ -39,12 +48,12 @@ class BookController extends Controller
             $validate['cover'] = basename($path);
         }
         $book = Book::create($validate);
-        if($book){
+        if ($book) {
             $notification[] = array(
                 'message' => 'data buku berhasil disimpan',
                 'alert-type' => 'success'
             );
-        }else{
+        } else {
             $notification[] = array(
                 'message' => 'data buku gagal disimpan',
                 'alert-type' => 'error'
@@ -52,12 +61,14 @@ class BookController extends Controller
         }
         return redirect()->route('book')->with($notification);
     }
-    public function edit(string $id){
+    public function edit(string $id)
+    {
         $data['book'] = Book::findOrFail($id);
         $data['bookshelves'] = Bookshelf::pluck('name', 'id');
         return view('books.edit', $data);
     }
-    public function update(Request $request, string $id){
+    public function update(Request $request, string $id)
+    {
         $book = Book::findOrFail($id);
         $validate = $request->validate([
             'title' => 'required|max:255',
@@ -68,9 +79,9 @@ class BookController extends Controller
             'cover' => 'required',
             'bookshelf_id' => 'required|max:5'
         ]);
-        if($request->hasFile('cover')){
-            if($book->cover != null){
-                Storage::delete('public/cover_buku/'.$book->cover);
+        if ($request->hasFile('cover')) {
+            if ($book->cover != null) {
+                Storage::delete('public/cover_buku/' . $book->cover);
             }
             $path = $request->file('cover')->storeAs(
                 'public/cover_buku',
@@ -79,12 +90,12 @@ class BookController extends Controller
             $validate['cover'] = basename($path);
         }
         $book->update($validate);
-        if($book){
+        if ($book) {
             $notification[] = array(
                 'message' => 'data buku berhasil disimpan',
                 'alert-type' => 'success'
             );
-        }else{
+        } else {
             $notification[] = array(
                 'message' => 'data buku gagal disimpan',
                 'alert-type' => 'error'
@@ -92,28 +103,32 @@ class BookController extends Controller
         }
         return redirect()->route('book')->with($notification);
     }
-    public function destroy(string $id){
+    public function destroy(string $id)
+    {
         $book = Book::findOrFail($id);
-        Storage::delete('public/cover_buku/'.$book->cover);
+        Storage::delete('public/cover_buku/' . $book->cover);
         $book->delete();
         $notification = array(
             'message' => 'data buku berhasil dihapus',
             'alert-type' => 'success'
         );
-        return redirect()->route('book')->with($notification); 
+        return redirect()->route('book')->with($notification);
     }
 
-    public function print(){
+    public function print()
+    {
         $data['books'] = Book::with('bookshelf')->get();
         $pdf = Pdf::loadView('books.print', $data);
         return $pdf->stream('ListBuku.pdf');
     }
 
-    public function export(){
+    public function export()
+    {
         return Excel::download(new BooksExport, 'DataBuku.xlsx');
     }
 
-    public function import(Request $request){
+    public function import(Request $request)
+    {
         $request->validate([
             'file' => 'required|mimes:xlsx,xls'
         ]);

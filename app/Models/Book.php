@@ -18,15 +18,26 @@ class Book extends Model
         'bookshelf_id',
     ];
 
-    public function bookshelf(): BelongsTo{
+    // public function index()
+    // {
+    //     // Mengambil 5 data buku per halaman
+    //     $books = Book::paginate(5);
+
+    //     // Mengirim data buku ke view
+    //     return view('books.index', compact('books'));
+    // }
+
+    public function bookshelf(): BelongsTo
+    {
         return $this->belongsTo(Bookshelf::class);
     }
 
-    public static function getDataBooks(){
+    public static function getDataBooks()
+    {
         $books = Book::all();
         $books_filter = [];
         foreach ($books as $key => $book) {
-            $books_filter[$key]['no'] = $key+1;
+            $books_filter[$key]['no'] = $key + 1;
             $books_filter[$key]['title'] = $book['title'];
             $books_filter[$key]['author'] = $book['author'];
             $books_filter[$key]['year'] = $book['year'];

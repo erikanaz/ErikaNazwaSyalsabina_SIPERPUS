@@ -1,0 +1,25 @@
+Dokumentasi Penambahan Fitur Web SIPERPUS
+
+1. paginate => membagi data buku menjadi beberapa halaman
+	# ubah fungsi index di BookController
+	# ubah view, di index.blade.php, panggil links() untuk menampilkan
+	  navigasi halaman
+
+2. fitur search => pencarian data
+	# buat controllernya, namanya SearchController
+	  > php artisan make:controller SearchController
+	# atur route nya di web.php (tambahkan route untuk search)
+	# buat view untuk search nya dan untuk menampilkan hasilnya,
+	  di books/index.blade.php
+
+3. role dan permission (spatie)
+   a) pustakawan => bisa melihat list buku, search dan bisa melakukan crud
+	# tambahkan @hasrole('pustakawan') .... @endhasrole jika fitur hanya bisa diakses
+          oleh pustakawan => index.blade.php
+   b) mahasiswa => hanya bisa melihat list buku dan search
+	
+
+
+
+
+
